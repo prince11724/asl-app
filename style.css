@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left, .right {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.left {
+  background: #000;
+}
+
+video, canvas {
+  width: 90%;
+  max-width: 500px;
+  border: 2px solid white;
+}
+
+.right {
+  background: #9598BA;
+}
+
+#output {
+  font-size: 50px;
+  font-weight: bold;
+}
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  margin-top: 20px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  border-radius: 10px;
+}
