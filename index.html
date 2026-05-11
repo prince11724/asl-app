@@ -1,37 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
   <title>ASL Translator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
+  <div class="app">
 
-  <div class="left">
-    <h1 class="title">ASL Translator</h1>
+    <h2>ASL Translator</h2>
 
     <video id="video" autoplay></video>
-<div id="output">Show gesture...</div>
 
-<button onclick="speakNow()">🔊 Speak Sentence</button>
-<button onclick="clearSentence()">Clear</button>
+    <div id="output">Show gesture...</div>
 
-    <h2 id="output">Show gesture...</h2>
-  </div>
-
-  <div class="right">
+    <button onclick="speakSentence()">🔊 Speak Sentence</button>
     <button onclick="clearSentence()">Clear</button>
+
   </div>
 
-</div>
+  <!-- Mediapipe -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
-
-
