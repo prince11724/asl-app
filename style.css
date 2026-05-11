@@ -22,7 +22,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: relative;   /* REQUIRED */
 }
 
 /* TITLE INSIDE CAMERA AREA */
@@ -61,24 +61,24 @@ video, canvas {
 
 #output {
   position: absolute;
-  bottom: 20px;
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20;
+  z-index: 9999;
 
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 40px !important;   /* BIG TEXT */
+  font-weight: 900 !important;
   text-align: center;
 
-  padding: 12px 20px;
-  border-radius: 15px;
+  padding: 15px 20px;
+  border-radius: 18px;
 
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65);
   color: white;
 
-  width: 85%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
+  width: 90%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
 }
 
 /* BUTTON */
