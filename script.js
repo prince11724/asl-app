@@ -45,7 +45,7 @@ function speakSentence() {
 function addGesture(gesture) {
   let now = Date.now();
 
-  if (gesture === lastGesture && now - lastAddedTime < 1500) {
+  if (gesture === lastGesture && now - lastAddedTime < 500) {
     return;
   }
 
@@ -73,7 +73,7 @@ function stableUpdate(gesture) {
     stableCount = 1;
   }
 
-  if (stableCount === 12) {
+  if (stableCount >= 3) {
     addGesture(gesture);
   }
 }
@@ -113,8 +113,8 @@ const camera = new Camera(video, {
   onFrame: async () => {
     await hands.send({ image: video });
   },
-  width: 480,
-  height: 360
+  width: 640,
+  height: 480
 });
 
 camera.start();
