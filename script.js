@@ -1,6 +1,6 @@
 let sentence = "";
 let lastGesture = "";
-let lastAddedTime = 0;
+let lastTime = 0;
 
 let stableGesture = "";
 let stableCount = 0;
@@ -11,54 +11,48 @@ let spaceAdded = false;
 const video = document.getElementById("video");
 const output = document.getElementById("output");
 
-console.log("App running...");
-
-const hands = new Hands({
-  locateFile: (file) => {
-    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-  }
-});
-
-hands.setOptions({
-  maxNumHands: 1,
-  modelComplexity: 0,
-  minDetectionConfidence: 0.7,
-  minTrackingConfidence: 0.7
-});
-
-// 🔊 SPEAK FULL SENTENCE (IMPORTANT FIX)
+// ---------------- SPEAK FULL SENTENCE ----------------
 function speakSentence() {
   if (!sentence.trim()) return;
 
-  let textToSpeak = sentence.replace(/\//g, " ");
+  let text = sentence.replace(/\//g, " ");
 
-  let utterance = new SpeechSynthesisUtterance(textToSpeak);
+  let utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
   utterance.rate = 1;
-  utterance.pitch = 1;
 
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
 }
 
-// Add gesture only if stable + cooldown
+// ---------------- HANDS SETUP ----------------
+const hands = new Hands({
+  locateFile: (file) =>
+    `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+});
+
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 0,
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
+});
+
+// ---------------- ADD GESTURE ----------------
 function addGesture(gesture) {
   let now = Date.now();
 
-  if (gesture === lastGesture && now - lastAddedTime < 500) {
-    return;
-  }
+  if (gesture === lastGesture && now - lastTime < 500) return;
 
   sentence += gesture + " ";
   output.innerText = sentence.trim();
 
   lastGesture = gesture;
-  lastAddedTime = now;
-
+  lastTime = now;
   spaceAdded = false;
 }
 
-// Stable gesture detection
+// ---------------- STABILITY (FASTER) ----------------
 function stableUpdate(gesture) {
   if (gesture === "Unknown") {
     stableGesture = "";
@@ -73,33 +67,45 @@ function stableUpdate(gesture) {
     stableCount = 1;
   }
 
+  // ⚡ FAST MODE (changed from 12 → 3)
   if (stableCount >= 3) {
     addGesture(gesture);
   }
 }
 
-// Auto space if hand disappears
+// ---------------- AUTO SPACE ----------------
 function autoSpace() {
   let now = Date.now();
 
-  if (now - lastHandSeenTime > 2000 && !spaceAdded && sentence.length > 0) {
+  if (now - lastHandSeenTime > 1500 && !spaceAdded && sentence.length > 0) {
     sentence += " / ";
     output.innerText = sentence.trim();
     spaceAdded = true;
-
-    // 🔊 OPTIONAL: auto speak full sentence
-    speakSentence();
   }
 }
 
-hands.onResults(results => {
-
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+// ---------------- DETECTION ----------------
+hands.onResults((results) => {
+  if (results.multiHandLandmarks?.length > 0) {
 
     lastHandSeenTime = Date.now();
 
-    const landmarks = results.multiHandLandmarks[0];
-    let gesture = detectGesture(landmarks);
+    let lm = results.multiHandLandmarks[0];
+
+    let thumb = lm[4].y < lm[3].y;
+    let index = lm[8].y < lm[6].y;
+    let middle = lm[12].y < lm[10].y;
+    let ring = lm[16].y < lm[14].y;
+    let pinky = lm[20].y < lm[18].y;
+
+    let gesture = "Unknown";
+
+    if (thumb && index && middle && ring && pinky) gesture = "Hello";
+    else if (!thumb && index && middle && !ring && !pinky) gesture = "Peace";
+    else if (!thumb && index && !middle && !ring && !pinky) gesture = "One";
+    else if (thumb && !index && !middle && !ring && !pinky) gesture = "Good";
+    else if (!thumb && index && middle && ring && pinky) gesture = "Stop";
+    else if (thumb && !index && !middle && !ring && pinky) gesture = "Call";
 
     stableUpdate(gesture);
 
@@ -108,7 +114,7 @@ hands.onResults(results => {
   }
 });
 
-// Camera
+// ---------------- CAMERA ----------------
 const camera = new Camera(video, {
   onFrame: async () => {
     await hands.send({ image: video });
@@ -119,26 +125,7 @@ const camera = new Camera(video, {
 
 camera.start();
 
-// Gesture detection
-function detectGesture(lm) {
-
-  let thumb = lm[4].y < lm[3].y;
-  let index = lm[8].y < lm[6].y;
-  let middle = lm[12].y < lm[10].y;
-  let ring = lm[16].y < lm[14].y;
-  let pinky = lm[20].y < lm[18].y;
-
-  if (thumb && index && middle && ring && pinky) return "Hello";
-  if (!thumb && index && middle && !ring && !pinky) return "Peace";
-  if (!thumb && index && !middle && !ring && !pinky) return "One";
-  if (thumb && !index && !middle && !ring && !pinky) return "Good";
-  if (!thumb && index && middle && ring && pinky) return "Stop";
-  if (thumb && !index && !middle && !ring && pinky) return "Call me";
-
-  return "Unknown";
-}
-
-// Clear everything
+// ---------------- CLEAR ----------------
 function clearSentence() {
   sentence = "";
   output.innerText = "Show gesture...";
@@ -149,10 +136,3 @@ function clearSentence() {
 
   window.speechSynthesis.cancel();
 }
-
-// 🟢 BUTTON FUNCTION (ADD THIS IN HTML BUTTON)
-function speakNow() {
-  speakSentence();
-}
-
-
