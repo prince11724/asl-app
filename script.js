@@ -154,3 +154,5 @@ function clearSentence() {
 function speakNow() {
   speakSentence();
 }
+
+
