@@ -1,6 +1,10 @@
 let sentence = "";
 let lastGesture = "";
-let lastTime = 0;
+let lastAddedTime = 0;
+
+let stableGesture = "";
+let stableCount = 0;
+
 const video = document.getElementById("video");
 const output = document.getElementById("output");
 
@@ -14,40 +18,70 @@ const hands = new Hands({
 
 hands.setOptions({
   maxNumHands: 1,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5
+  modelComplexity: 0,  // LOWER = FASTER
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
 });
 
+// Add gesture only if stable + cooldown
+function addGesture(gesture) {
+  let now = Date.now();
+
+  // cooldown 1.5 sec to avoid repetition
+  if (gesture === lastGesture && now - lastAddedTime < 1500) {
+    return;
+  }
+
+  // add to sentence
+  sentence += " " + gesture;
+  output.innerText = sentence.trim();
+
+  lastGesture = gesture;
+  lastAddedTime = now;
+}
+
+// Stable gesture logic
+function stableUpdate(gesture) {
+  if (gesture === "Unknown") {
+    stableGesture = "";
+    stableCount = 0;
+    return;
+  }
+
+  if (gesture === stableGesture) {
+    stableCount++;
+  } else {
+    stableGesture = gesture;
+    stableCount = 1;
+  }
+
+  // gesture must appear stable for 12 frames
+  if (stableCount === 12) {
+    addGesture(gesture);
+  }
+}
+
 hands.onResults(results => {
-  console.log(results); // 👈 ADD THIS
-
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    console.log("Hand detected"); // 👈 ADD THIS
-
     const landmarks = results.multiHandLandmarks[0];
     let gesture = detectGesture(landmarks);
 
-if (gesture !== "Unknown" && gesture !== lastGesture) {
-  sentence += " " + gesture;
-  output.innerText = sentence;
-  lastGesture = gesture;
-}
+    stableUpdate(gesture);
   }
 });
 
+// Camera settings (lower resolution = less lag)
 const camera = new Camera(video, {
   onFrame: async () => {
     await hands.send({ image: video });
   },
-  width: 640,
-  height: 480
+  width: 480,
+  height: 360
 });
 
 camera.start();
 
 function detectGesture(lm) {
-
   let thumb = lm[4].y < lm[3].y;
   let index = lm[8].y < lm[6].y;
   let middle = lm[12].y < lm[10].y;
@@ -74,7 +108,11 @@ function detectGesture(lm) {
 
   return "Unknown";
 }
+
 function clearSentence() {
   sentence = "";
-  output.innerText = "";
+  output.innerText = "Show gesture...";
+  lastGesture = "";
+  stableGesture = "";
+  stableCount = 0;
 }
