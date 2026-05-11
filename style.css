@@ -43,3 +43,19 @@ button {
   cursor: pointer;
   border-radius: 10px;
 }
+@media (max-width: 768px) {
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .container {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  video, canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
