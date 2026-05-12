@@ -53,6 +53,21 @@ hands.onResults((results) => {
 
         const currentTime = Date.now();
 
+    function updateGesture(text){
+
+    if(
+        text !== lastGesture &&
+        currentTime - lastGestureTime > 1500
+    ){
+
+        gestureText.innerHTML = text;
+
+        lastGesture = text;
+
+        lastGestureTime = currentTime;
+    }
+
+}
         // SHOW GESTURE
 
         if (gesture !== "Unknown") {
