@@ -233,28 +233,56 @@
     </div>
 
     <!-- ===== JAVASCRIPT ===== -->
+<script>
 
-    <script>
+    // START BUTTON
 
-        // START BUTTON
+    document.getElementById("startBtn").onclick = async function(){
 
-        document.getElementById("startBtn").onclick = function(){
+        document.getElementById("welcomeScreen").style.display = "none";
 
-            document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("mainApp").style.display = "flex";
 
-            document.getElementById("mainApp").style.display = "flex";
+        startCamera();
 
-        };
+    };
 
-        // CLEAR BUTTON
+    // CAMERA FUNCTION
 
-        document.getElementById("clearBtn").onclick = function(){
+    async function startCamera(){
 
-            document.getElementById("gestureText").innerHTML = "Show Gesture...";
+        const video = document.querySelector("video");
 
-        };
+        try{
 
-    </script>
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video:true,
+                audio:false
+            });
+
+            video.srcObject = stream;
+
+        }
+
+        catch(error){
+
+            alert("Camera access denied or not working");
+
+            console.log(error);
+
+        }
+
+    }
+
+    // CLEAR BUTTON
+
+    document.getElementById("clearBtn").onclick = function(){
+
+        document.getElementById("gestureText").innerHTML = "Show Gesture...";
+
+    };
+
+</script>
 
 </body>
 
