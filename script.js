@@ -53,14 +53,24 @@ hands.onResults((results) => {
 
         const currentTime = Date.now();
 
-    function updateGesture(text){
+   function updateGesture(text){
+
+    const currentTime = Date.now();
 
     if(
         text !== lastGesture &&
         currentTime - lastGestureTime > 1500
     ){
 
+        // Show text
+
         gestureText.innerHTML = text;
+
+        // Speak text
+
+        speakText(text);
+
+        // Save gesture
 
         lastGesture = text;
 
