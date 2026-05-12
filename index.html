@@ -1,74 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>ASL Translator</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASL Translator</title>
+
+    <style>
+
+        /* ===== BODY ===== */
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial, sans-serif;
+            background:#0f172a;
+            overflow:hidden;
+            color:white;
+            height:100vh;
+            width:100%;
+        }
+
+        /* ===== WELCOME SCREEN ===== */
+
+        .welcome-screen{
+            position:fixed;
+            inset:0;
+            background:linear-gradient(135deg,#020617,#0f172a);
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            z-index:999;
+            text-align:center;
+            padding:20px;
+        }
+
+        .welcome-screen h1{
+            font-size:40px;
+            color:#38bdf8;
+            margin-bottom:15px;
+        }
+
+        .welcome-screen p{
+            font-size:18px;
+            opacity:0.8;
+            margin-bottom:30px;
+        }
+
+        .start-btn{
+            padding:15px 35px;
+            border:none;
+            border-radius:15px;
+            background:#38bdf8;
+            color:white;
+            font-size:20px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .start-btn:hover{
+            background:#0ea5e9;
+            transform:scale(1.05);
+        }
+
+        /* ===== MAIN APP ===== */
+
+        .app-container{
+            display:none;
+            flex-direction:column;
+            height:100vh;
+            width:100%;
+        }
+
+        /* ===== CAMERA ===== */
+
+        .camera-section{
+            flex:1;
+            background:black;
+            overflow:hidden;
+            position:relative;
+        }
+
+        .camera-section video{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        /* ===== OUTPUT SECTION ===== */
+
+        .output-section{
+            flex:1;
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+            border-top-left-radius:25px;
+            border-top-right-radius:25px;
+            padding:20px;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        /* ===== TITLE ===== */
+
+        .app-title{
+            text-align:center;
+            font-size:30px;
+            font-weight:bold;
+            color:#38bdf8;
+            margin-top:10px;
+        }
+
+        /* ===== GESTURE BOX ===== */
+
+        .gesture-box{
+            flex:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:20px;
+        }
+
+        .gesture-text{
+            font-size:38px;
+            font-weight:bold;
+            line-height:1.5;
+        }
+
+        /* ===== CLEAR BUTTON ===== */
+
+        .clear-btn{
+            width:100%;
+            padding:15px;
+            border:none;
+            border-radius:15px;
+            background:#38bdf8;
+            color:white;
+            font-size:20px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .clear-btn:hover{
+            background:#0ea5e9;
+        }
+
+        /* ===== DESKTOP MODE ===== */
+
+        @media(min-width:768px){
+
+            .app-container{
+                flex-direction:row;
+            }
+
+            .camera-section{
+                flex:1;
+            }
+
+            .output-section{
+                flex:1;
+                border-radius:0;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-  <div class="app">
+    <!-- ===== WELCOME SCREEN ===== -->
 
-    <h2>ASL Translator</h2>
+    <div class="welcome-screen" id="welcomeScreen">
 
-    <video id="video" autoplay></video>
+        <h1>Welcome to ASL Translator</h1>
 
-    <div id="output">Show gesture...</div>
+        <p>
+            Translate Sign Language into Meaningful Text
+        </p>
 
-    <button onclick="speakSentence()">🔊 Speak Sentence</button>
-    <button onclick="clearSentence()">Clear</button>
-
-  </div>
-
-  <!-- Mediapipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
-  <script src="script.js"></script>
-  <div class="welcome-screen">
-    <h1>Welcome to ASL Translator</h1>
-    <p>Translate Sign Language into Meaningful Text</p>
-    <button class="start-btn">Get Started</button>
-</div>
-
-<div class="app-container">
-
-    <!-- CAMERA -->
-    <div class="camera-section">
-        <video autoplay playsinline></video>
-    </div>
-
-    <!-- OUTPUT -->
-    <div class="output-section">
-
-        <div class="app-title">
-            ASL Translator
-        </div>
-
-        <div class="gesture-box">
-            <div class="gesture-text">
-                Show Gesture...
-            </div>
-        </div>
-
-        <button class="clear-btn">
-            Clear
+        <button class="start-btn" id="startBtn">
+            Get Started
         </button>
 
     </div>
 
-</div>
-  <script>
-const startBtn = document.querySelector(".start-btn");
-const welcomeScreen = document.querySelector(".welcome-screen");
+    <!-- ===== MAIN APP ===== -->
 
-startBtn.addEventListener("click", () => {
-    welcomeScreen.style.display = "none";
-});
-</script>
+    <div class="app-container" id="mainApp">
+
+        <!-- CAMERA -->
+
+        <div class="camera-section">
+
+            <video autoplay playsinline></video>
+
+        </div>
+
+        <!-- OUTPUT -->
+
+        <div class="output-section">
+
+            <div class="app-title">
+                ASL Translator
+            </div>
+
+            <div class="gesture-box">
+
+                <div class="gesture-text" id="gestureText">
+
+                    Show Gesture...
+
+                </div>
+
+            </div>
+
+            <button class="clear-btn" id="clearBtn">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+
+    <script>
+
+        // START BUTTON
+
+        document.getElementById("startBtn").onclick = function(){
+
+            document.getElementById("welcomeScreen").style.display = "none";
+
+            document.getElementById("mainApp").style.display = "flex";
+
+        };
+
+        // CLEAR BUTTON
+
+        document.getElementById("clearBtn").onclick = function(){
+
+            document.getElementById("gestureText").innerHTML = "Show Gesture...";
+
+        };
+
+    </script>
 
 </body>
+
 </html>
-
-
-
