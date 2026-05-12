@@ -1,91 +1,210 @@
 let sentence = "";
 let lastGesture = "";
-let lastTime = 0;
-let lastSpeakTime = 0;
+let lastDetectedTime = 0;
+
 const video = document.getElementById("video");
 const output = document.getElementById("output");
 
-console.log("App running...");
+console.log("ASL Translator Running...");
+
+/* =========================
+   MEDIAPIPE HANDS
+========================= */
 
 const hands = new Hands({
-  locateFile: (file) => {
-    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-  }
+    locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }
 });
 
 hands.setOptions({
-  maxNumHands: 1,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.7
 });
 
-hands.onResults(results => {
-  console.log(results); // 👈 ADD THIS
+/* =========================
+   RESULTS
+========================= */
 
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    console.log("Hand detected"); // 👈 ADD THIS
+hands.onResults((results) => {
 
-    const landmarks = results.multiHandLandmarks[0];
-    let gesture = detectGesture(landmarks);
+    if(results.multiHandLandmarks &&
+       results.multiHandLandmarks.length > 0){
 
-if (gesture !== "Unknown" && gesture !== lastGesture) {
-  sentence += " " + gesture;
-  output.innerText = sentence;
-  lastGesture = gesture;
-  speak(gesture);
-}
-  }
+        const landmarks = results.multiHandLandmarks[0];
+
+        const gesture = detectGesture(landmarks);
+
+        const currentTime = Date.now();
+
+        // Prevent repeating same gesture quickly
+        if(
+            gesture !== "Unknown" &&
+            gesture !== lastGesture &&
+            currentTime - lastDetectedTime > 2000
+        ){
+
+            sentence += " " + gesture;
+
+            output.innerText = sentence;
+
+            speak(gesture);
+
+            lastGesture = gesture;
+
+            lastDetectedTime = currentTime;
+        }
+
+    }
 });
 
-const camera = new Camera(video, {
-  onFrame: async () => {
-    await hands.send({ image: video });
-  },
-  width: 640,
-  height: 480
+/* =========================
+   CAMERA
+========================= */
+
+const camera = new Camera(video,{
+    onFrame: async () => {
+        await hands.send({ image: video });
+    },
+    width: 640,
+    height: 480
 });
 
 camera.start();
 
-function detectGesture(lm) {
+/* =========================
+   GESTURE DETECTION
+========================= */
 
-  let thumb = lm[4].y < lm[3].y;
-  let index = lm[8].y < lm[6].y;
-  let middle = lm[12].y < lm[10].y;
-  let ring = lm[16].y < lm[14].y;
-  let pinky = lm[20].y < lm[18].y;
+function detectGesture(lm){
 
-  // ✋ All fingers up
-  if (thumb && index && middle && ring && pinky) return "Hello  Pinky  ye app aapke bete ne banaya hai ";
+    // Finger states
+    const thumb =
+        lm[4].x < lm[3].x;
 
-  // ✌️ Two fingers
-  if (!thumb && index && middle && !ring && !pinky) return "Peace";
+    const index =
+        lm[8].y < lm[6].y;
 
-  // ☝️ One finger
-  if (!thumb && index && !middle && !ring && !pinky) return "One";
+    const middle =
+        lm[12].y < lm[10].y;
 
-  // 👍 Thumb up
-  if (thumb && !index && !middle && !ring && !pinky) return " pinky ji aap apne bete ko maara mat karo";
+    const ring =
+        lm[16].y < lm[14].y;
 
-  // ✋ Stop (palm open without thumb)
-  if (!thumb && index && middle && ring && pinky) return "Stop";
+    const pinky =
+        lm[20].y < lm[18].y;
 
-  // 🤙 (thumb + pinky)
-  if (thumb && !index && !middle && !ring && pinky) return "Call me";
-  if (!thumb && !index && middle && !ring && !pinky) return "Fuck You";
-  return "Unknown";
+    /* =====================
+       OPEN PALM
+    ===================== */
+
+    if(thumb && index && middle && ring && pinky){
+
+        return "Hello";
+
+    }
+
+    /* =====================
+       PEACE
+    ===================== */
+
+    if(!thumb && index && middle && !ring && !pinky){
+
+        return "Peace";
+
+    }
+
+    /* =====================
+       ONE
+    ===================== */
+
+    if(!thumb && index && !middle && !ring && !pinky){
+
+        return "One";
+
+    }
+
+    /* =====================
+       THUMBS UP
+    ===================== */
+
+    if(
+        thumb &&
+        !index &&
+        !middle &&
+        !ring &&
+        !pinky
+    ){
+
+        return "Good";
+
+    }
+
+    /* =====================
+       STOP
+    ===================== */
+
+    if(
+        !thumb &&
+        index &&
+        middle &&
+        ring &&
+        pinky
+    ){
+
+        return "Stop";
+
+    }
+
+    /* =====================
+       CALL ME
+    ===================== */
+
+    if(
+        thumb &&
+        !index &&
+        !middle &&
+        !ring &&
+        pinky
+    ){
+
+        return "Call Me";
+
+    }
+
+    return "Unknown";
 }
-function clearSentence() {
-  sentence = "";
-  output.innerText = "";
-}
-function speak(text) {
-  const speech = new SpeechSynthesisUtterance();
-  speech.text = text;
-  speech.lang = "en-US"; // you can change to "hi-IN" for Hindi
-  speech.rate = 1; // speed
-  speech.pitch = 1; // voice tone
 
-  window.speechSynthesis.speak(speech);
+/* =========================
+   CLEAR BUTTON
+========================= */
+
+function clearSentence(){
+
+    sentence = "";
+
+    output.innerText = "Show Gesture...";
+
+    lastGesture = "";
+}
+
+/* =========================
+   TEXT TO SPEECH
+========================= */
+
+function speak(text){
+
+    window.speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-US";
+
+    speech.rate = 1;
+
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
 }
