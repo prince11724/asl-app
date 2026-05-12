@@ -193,7 +193,7 @@ if(
 ){
 
     updateGesture(
-        "Hello 👋"
+        "I WANT COFFEE 👋"
     );
 
 }
@@ -203,7 +203,7 @@ if(
 ===================== */
 
 else if(
-    !thumbOpen &&
+    thumbOpen &&
     indexOpen &&
     middleOpen &&
     !ringOpen &&
@@ -211,7 +211,7 @@ else if(
 ){
 
     updateGesture(
-        "I want Coffee ☕"
+        "HOW MUCH?"
     );
 
 }
@@ -247,7 +247,7 @@ else if(
 ){
 
     updateGesture(
-        "How Much? 💰"
+        "OKAY"
     );
 
 }
@@ -276,10 +276,10 @@ else if(
 
 else if(
     !thumbOpen &&
-    indexOpen &&
-    middleOpen &&
-    ringOpen &&
-    pinkyOpen
+    !indexOpen &&
+    !middleOpen &&
+    !ringOpen &&
+    !pinkyOpen
 ){
 
     updateGesture(
