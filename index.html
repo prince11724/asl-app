@@ -2,46 +2,63 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
     <title>ASL Translator</title>
 
     <style>
 
-        /* ===== BODY ===== */
+        /* =========================
+           RESET
+        ========================= */
 
         *{
             margin:0;
             padding:0;
             box-sizing:border-box;
+            font-family:Arial,sans-serif;
         }
 
         body{
-            font-family:Arial, sans-serif;
             background:#0f172a;
-            overflow:hidden;
             color:white;
             height:100vh;
-            width:100%;
+            overflow:hidden;
         }
 
-        /* ===== WELCOME SCREEN ===== */
+        /* =========================
+           WELCOME SCREEN
+        ========================= */
 
         .welcome-screen{
             position:fixed;
             inset:0;
-            background:linear-gradient(135deg,#020617,#0f172a);
+
+            background:
+            linear-gradient(
+                135deg,
+                #020617,
+                #0f172a
+            );
+
             display:flex;
             flex-direction:column;
             justify-content:center;
             align-items:center;
-            z-index:999;
+
             text-align:center;
+
             padding:20px;
+
+            z-index:999;
         }
 
         .welcome-screen h1{
-            font-size:40px;
+            font-size:42px;
             color:#38bdf8;
             margin-bottom:15px;
         }
@@ -49,18 +66,27 @@
         .welcome-screen p{
             font-size:18px;
             opacity:0.8;
-            margin-bottom:30px;
+            margin-bottom:35px;
+            line-height:1.6;
         }
 
         .start-btn{
-            padding:15px 35px;
+            padding:16px 40px;
+
             border:none;
-            border-radius:15px;
+
+            border-radius:18px;
+
             background:#38bdf8;
+
             color:white;
+
             font-size:20px;
+
             font-weight:bold;
+
             cursor:pointer;
+
             transition:0.3s;
         }
 
@@ -69,22 +95,31 @@
             transform:scale(1.05);
         }
 
-        /* ===== MAIN APP ===== */
+        /* =========================
+           MAIN APP
+        ========================= */
 
         .app-container{
             display:none;
             flex-direction:column;
-            height:100vh;
             width:100%;
+            height:100vh;
         }
 
-        /* ===== CAMERA ===== */
+        /* =========================
+           CAMERA SECTION
+        ========================= */
 
         .camera-section{
-            flex:1;
-            background:black;
-            overflow:hidden;
             position:relative;
+
+            width:100%;
+
+            height:50vh;
+
+            background:black;
+
+            overflow:hidden;
         }
 
         .camera-section video{
@@ -93,83 +128,151 @@
             object-fit:cover;
         }
 
-        /* ===== OUTPUT SECTION ===== */
+        /* =========================
+           APP TITLE
+        ========================= */
+
+        .app-title{
+            position:absolute;
+
+            top:20px;
+
+            left:50%;
+
+            transform:translateX(-50%);
+
+            z-index:10;
+
+            background:
+            rgba(0,0,0,0.5);
+
+            padding:10px 25px;
+
+            border-radius:18px;
+
+            font-size:24px;
+
+            font-weight:bold;
+
+            color:white;
+
+            backdrop-filter:blur(10px);
+        }
+
+        /* =========================
+           LIVE STATUS
+        ========================= */
+
+        .live-status{
+            position:absolute;
+
+            bottom:20px;
+
+            left:20px;
+
+            background:
+            rgba(0,0,0,0.6);
+
+            padding:10px 18px;
+
+            border-radius:15px;
+
+            color:#00ff95;
+
+            font-size:16px;
+
+            border:1px solid
+            rgba(0,255,149,0.3);
+        }
+
+        /* =========================
+           OUTPUT SECTION
+        ========================= */
 
         .output-section{
-            flex:1;
-            background:rgba(255,255,255,0.08);
-            backdrop-filter:blur(10px);
-            border-top-left-radius:25px;
-            border-top-right-radius:25px;
-            padding:20px;
+            width:100%;
+
+            height:50vh;
+
+            background:#050505;
+
+            padding:22px;
+
             display:flex;
             flex-direction:column;
             justify-content:space-between;
         }
 
-        /* ===== TITLE ===== */
-
-        .app-title{
-            text-align:center;
-            font-size:30px;
-            font-weight:bold;
-            color:#38bdf8;
-            margin-top:10px;
-        }
-
-        /* ===== GESTURE BOX ===== */
+        /* =========================
+           GESTURE BOX
+        ========================= */
 
         .gesture-box{
             flex:1;
+
             display:flex;
+
             justify-content:center;
+
             align-items:center;
+
             text-align:center;
-            padding:20px;
+
+            background:#0d0d0d;
+
+            border-radius:28px;
+
+            padding:25px;
+
+            border:1px solid
+            rgba(255,255,255,0.08);
+
+            box-shadow:
+            0 0 25px
+            rgba(255,255,255,0.05);
         }
 
         .gesture-text{
-            font-size:38px;
-            font-weight:bold;
+            font-size:42px;
+            font-weight:800;
             line-height:1.5;
         }
 
-        /* ===== CLEAR BUTTON ===== */
+        /* =========================
+           CLEAR BUTTON
+        ========================= */
 
         .clear-btn{
             width:100%;
-            padding:15px;
+
+            margin-top:25px;
+
+            padding:18px;
+
             border:none;
-            border-radius:15px;
-            background:#38bdf8;
+
+            border-radius:20px;
+
+            background:
+            linear-gradient(
+                to right,
+                #007bff,
+                #0057ff
+            );
+
             color:white;
-            font-size:20px;
+
+            font-size:22px;
+
             font-weight:bold;
+
             cursor:pointer;
+
             transition:0.3s;
         }
 
         .clear-btn:hover{
-            background:#0ea5e9;
-        }
-
-        /* ===== DESKTOP MODE ===== */
-
-        @media(min-width:768px){
-
-            .app-container{
-                flex-direction:row;
-            }
-
-            .camera-section{
-                flex:1;
-            }
-
-            .output-section{
-                flex:1;
-                border-radius:0;
-            }
-
+            transform:scale(1.02);
         }
 
     </style>
@@ -178,31 +281,53 @@
 
 <body>
 
-    <!-- ===== WELCOME SCREEN ===== -->
+    <!-- =========================
+         WELCOME SCREEN
+    ========================== -->
 
-    <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-screen"
+         id="welcomeScreen">
 
-        <h1>Welcome to ASL Translator</h1>
+        <h1>
+            Welcome to ASL Translator
+        </h1>
 
         <p>
-            Translate Sign Language into Meaningful Text
+            Translate Sign Language
+            into Meaningful Text
         </p>
 
-        <button class="start-btn" id="startBtn">
+        <button class="start-btn"
+                id="startBtn">
+
             Get Started
+
         </button>
 
     </div>
 
-    <!-- ===== MAIN APP ===== -->
+    <!-- =========================
+         MAIN APP
+    ========================== -->
 
-    <div class="app-container" id="mainApp">
+    <div class="app-container"
+         id="mainApp">
 
         <!-- CAMERA -->
 
         <div class="camera-section">
 
-            <video autoplay playsinline></video>
+            <div class="app-title">
+                ASL Translator
+            </div>
+
+            <video autoplay
+                   playsinline>
+            </video>
+
+            <div class="live-status">
+                ● AI Detecting Gesture
+            </div>
 
         </div>
 
@@ -210,13 +335,10 @@
 
         <div class="output-section">
 
-            <div class="app-title">
-                ASL Translator
-            </div>
-
             <div class="gesture-box">
 
-                <div class="gesture-text" id="gestureText">
+                <div class="gesture-text"
+                     id="gestureText">
 
                     Show Gesture...
 
@@ -224,137 +346,278 @@
 
             </div>
 
-            <button class="clear-btn" id="clearBtn">
+            <button class="clear-btn"
+                    id="clearBtn">
+
                 Clear
+
             </button>
 
         </div>
 
     </div>
 
-    <!-- ===== JAVASCRIPT ===== -->
-<script>
+    <!-- =========================
+         MEDIAPIPE
+    ========================== -->
 
-    // START BUTTON
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
-    document.getElementById("startBtn").onclick = async function(){
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 
-        document.getElementById("welcomeScreen").style.display = "none";
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
 
-        document.getElementById("mainApp").style.display = "flex";
+    <script>
 
-        startCamera();
+        const videoElement =
+            document.querySelector("video");
 
-    };
+        const hands =
+            new Hands({
 
-    // CAMERA FUNCTION
+            locateFile: (file) => {
 
-    async function startCamera(){
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
 
-        const video = document.querySelector("video");
+            }
 
-        try{
+        });
 
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video:true,
-                audio:false
+        hands.setOptions({
+
+            maxNumHands:1,
+
+            modelComplexity:1,
+
+            minDetectionConfidence:0.7,
+
+            minTrackingConfidence:0.7
+
+        });
+
+        /* =====================
+           HAND RESULTS
+        ===================== */
+
+        hands.onResults((results) => {
+
+            const gestureText =
+                document.getElementById(
+                    "gestureText"
+                );
+
+            // HAND DETECTED
+
+            if(
+                results.multiHandLandmarks &&
+                results.multiHandLandmarks.length > 0
+            ){
+
+                const lm =
+                    results.multiHandLandmarks[0];
+
+                // FINGER STATES
+
+                const thumbOpen =
+                    Math.abs(
+                        lm[4].x - lm[2].x
+                    ) > 0.1;
+
+                const indexOpen =
+                    lm[8].y < lm[6].y;
+
+                const middleOpen =
+                    lm[12].y < lm[10].y;
+
+                const ringOpen =
+                    lm[16].y < lm[14].y;
+
+                const pinkyOpen =
+                    lm[20].y < lm[18].y;
+
+                // HELLO ✋
+
+                if(
+                    thumbOpen &&
+                    indexOpen &&
+                    middleOpen &&
+                    ringOpen &&
+                    pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "HELLO ✋";
+
+                }
+
+                // PEACE ✌️
+
+                else if(
+                    !thumbOpen &&
+                    indexOpen &&
+                    middleOpen &&
+                    !ringOpen &&
+                    !pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "PEACE ✌️";
+
+                }
+
+                // ONE ☝️
+
+                else if(
+                    !thumbOpen &&
+                    indexOpen &&
+                    !middleOpen &&
+                    !ringOpen &&
+                    !pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "ONE ☝️";
+
+                }
+
+                // GOOD 👍
+
+                else if(
+                    thumbOpen &&
+                    !indexOpen &&
+                    !middleOpen &&
+                    !ringOpen &&
+                    !pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "GOOD 👍";
+
+                }
+
+                // CALL ME 🤙
+
+                else if(
+                    thumbOpen &&
+                    !indexOpen &&
+                    !middleOpen &&
+                    !ringOpen &&
+                    pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "CALL ME 🤙";
+
+                }
+
+                // STOP ✋
+
+                else if(
+                    !thumbOpen &&
+                    indexOpen &&
+                    middleOpen &&
+                    ringOpen &&
+                    pinkyOpen
+                ){
+
+                    gestureText.innerHTML =
+                        "STOP ✋";
+
+                }
+
+                else{
+
+                    gestureText.innerHTML =
+                        "Gesture Not Recognized";
+
+                }
+
+            }
+
+            // NO HAND
+
+            else{
+
+                gestureText.innerHTML =
+                    "Show Gesture...";
+
+            }
+
+        });
+
+        /* =====================
+           CAMERA
+        ===================== */
+
+        async function startCamera(){
+
+            const stream =
+                await navigator.mediaDevices.getUserMedia({
+                    video:true
+                });
+
+            videoElement.srcObject =
+                stream;
+
+            const camera =
+                new Camera(videoElement,{
+
+                onFrame: async () => {
+
+                    await hands.send({
+                        image: videoElement
+                    });
+
+                },
+
+                width:640,
+
+                height:480
+
             });
 
-            video.srcObject = stream;
+            camera.start();
 
         }
 
-        catch(error){
+        /* =====================
+           START BUTTON
+        ===================== */
 
-            alert("Camera access denied or not working");
+        document.getElementById(
+            "startBtn"
+        ).onclick = function(){
 
-            console.log(error);
+            document.getElementById(
+                "welcomeScreen"
+            ).style.display = "none";
 
-        }
+            document.getElementById(
+                "mainApp"
+            ).style.display = "flex";
 
-    }
+            startCamera();
 
-    // CLEAR BUTTON
+        };
 
-    document.getElementById("clearBtn").onclick = function(){
+        /* =====================
+           CLEAR BUTTON
+        ===================== */
 
-        document.getElementById("gestureText").innerHTML = "Show Gesture...";
+        document.getElementById(
+            "clearBtn"
+        ).onclick = function(){
 
-    };
+            document.getElementById(
+                "gestureText"
+            ).innerHTML =
+                "Show Gesture...";
 
-</script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script
-    src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script>
+        };
 
-const videoElement = document.querySelector("video");
+    </script>
 
-const hands = new Hands({
-    locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    }
-});
-
-hands.setOptions({
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
-});
-
-hands.onResults(onResults);
-
-function onResults(results){
-
-    const gestureText = document.getElementById("gestureText");
-
-    if(results.multiHandLandmarks &&
-       results.multiHandLandmarks.length > 0){
-
-        gestureText.innerHTML = "Hand Detected ✋";
-
-    }
-    else{
-
-        gestureText.innerHTML = "Show Gesture...";
-
-    }
-
-}
-
-async function startCamera(){
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-        video:true
-    });
-
-    videoElement.srcObject = stream;
-
-    const camera = new Camera(videoElement,{
-        onFrame: async () => {
-            await hands.send({image: videoElement});
-        },
-        width: 640,
-        height: 480
-    });
-
-    camera.start();
-
-}
-
-document.getElementById("startBtn").onclick = function(){
-
-    document.getElementById("welcomeScreen").style.display = "none";
-
-    document.getElementById("mainApp").style.display = "flex";
-
-    startCamera();
-
-};
-
-</script>
 </body>
-
 </html>
