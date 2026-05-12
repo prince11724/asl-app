@@ -1,180 +1,148 @@
-
-body{
-    background:#000;
-    color:#fff;
-    height:100vh;
-    overflow:hidden;
+/* ===== FULL SCREEN APP ===== */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  overflow: hidden;
+  color: white;
 }
 
-/* MAIN APP */
-.app-container{
-    width:100%;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
+/* ===== MAIN CONTAINER ===== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
 }
 
-/* ========================= */
-/* TOP CAMERA SECTION */
-/* ========================= */
-
-.camera-section{
-    height:50vh;
-    width:100%;
-    position:relative;
-    overflow:hidden;
-    background:#111;
+/* ===== CAMERA SECTION ===== */
+.camera-section {
+  flex: 1;
+  background: black;
+  position: relative;
+  overflow: hidden;
 }
 
-.camera-section video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.camera-section video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* TITLE */
-.app-title{
-    position:absolute;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,0.6);
-    padding:10px 28px;
-    border-radius:16px;
-    font-size:28px;
-    font-weight:700;
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(255,255,255,0.2);
-    z-index:10;
+/* ===== CANVAS / OUTPUT SECTION ===== */
+.output-section {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
 }
 
-/* LIVE STATUS */
-.live-status{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    background:rgba(0,0,0,0.6);
-    padding:10px 18px;
-    border-radius:14px;
-    font-size:16px;
-    font-weight:500;
-    color:#00ff95;
-    border:1px solid rgba(0,255,149,0.3);
+/* ===== TITLE ===== */
+.app-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #38bdf8;
 }
 
-/* ========================= */
-/* BOTTOM RESULT SECTION */
-/* ========================= */
-
-.result-section{
-    height:50vh;
-    background:linear-gradient(to bottom,#050505,#0d0d0d);
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    padding:25px 18px;
+/* ===== GESTURE TEXT ===== */
+.gesture-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
 }
 
-/* DETECTED GESTURE CARD */
-.gesture-card{
-    background:#111;
-    border-radius:30px;
-    padding:25px;
-    border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 0 25px rgba(255,255,255,0.05);
-    margin-bottom:20px;
+.gesture-text {
+  font-size: 38px;
+  font-weight: bold;
+  color: white;
+  line-height: 1.5;
 }
 
-/* CURRENT GESTURE */
-.gesture-label{
-    color:#8e8e8e;
-    font-size:18px;
-    margin-bottom:10px;
-    font-weight:500;
+/* ===== BUTTON ===== */
+.clear-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  background: #38bdf8;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.detected-gesture{
-    font-size:52px;
-    font-weight:800;
-    color:#ffffff;
-    margin-bottom:15px;
-    line-height:1;
+.clear-btn:hover {
+  background: #0ea5e9;
+  transform: scale(1.02);
 }
 
-/* GENERATED SENTENCE */
-.sentence-box{
-    background:#0d0d0d;
-    border-radius:22px;
-    padding:20px;
-    border:1px solid rgba(255,255,255,0.08);
+/* ===== WELCOME SCREEN ===== */
+.welcome-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #020617, #0f172a);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
-.sentence-title{
-    font-size:17px;
-    color:#7f7f7f;
-    margin-bottom:10px;
+.welcome-screen h1 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  color: #38bdf8;
 }
 
-.generated-sentence{
-    font-size:24px;
-    line-height:1.6;
-    font-weight:500;
-    color:#ffffff;
+.welcome-screen p {
+  font-size: 18px;
+  opacity: 0.8;
+  margin-bottom: 30px;
 }
 
-/* EXAMPLE WORD HIGHLIGHT */
-.generated-sentence span{
-    color:#1e90ff;
-    font-weight:700;
+.start-btn {
+  padding: 15px 35px;
+  border: none;
+  border-radius: 15px;
+  background: #38bdf8;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* CLEAR BUTTON */
-.bottom-controls{
-    margin-top:auto;
+.start-btn:hover {
+  background: #0ea5e9;
 }
 
-.clear-btn{
-    width:100%;
-    border:none;
-    outline:none;
-    background:linear-gradient(to right,#0b7cff,#0057ff);
-    color:white;
-    font-size:24px;
-    font-weight:600;
-    padding:18px;
-    border-radius:22px;
-    cursor:pointer;
-    transition:0.3s ease;
-    box-shadow:0 0 20px rgba(0,119,255,0.3);
+/* ===== LAPTOP / DESKTOP MODE ===== */
+@media (min-width: 768px) {
+  .app-container {
+    flex-direction: row;
+  }
+
+  .camera-section {
+    flex: 1;
+  }
+
+  .output-section {
+    flex: 1;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-left: 2px solid rgba(255,255,255,0.1);
+  }
 }
-
-.clear-btn:hover{
-    transform:scale(1.02);
-    box-shadow:0 0 30px rgba(0,119,255,0.5);
-}
-
-/* ========================= */
-/* MOBILE RESPONSIVE */
-/* ========================= */
-
-@media(max-width:768px){
-
-    .app-title{
-        font-size:22px;
-        padding:10px 20px;
-    }
-
-    .detected-gesture{
-        font-size:42px;
-    }
-
-    .generated-sentence{
-        font-size:20px;
-    }
-
-    .clear-btn{
-        font-size:20px;
-    }
-}
-
-
