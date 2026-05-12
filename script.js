@@ -73,7 +73,7 @@ function detectGesture(lm) {
 
   // 🤙 (thumb + pinky)
   if (thumb && !index && !middle && !ring && pinky) return "Call me";
-
+  if (!thumb && !index && middle && !ring && !pinky) return "Fuck You";
   return "Unknown";
 }
 function clearSentence() {
