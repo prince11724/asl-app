@@ -1,130 +1,170 @@
-```javascript id="f7m2qx"
-// ===============================
-// ASL TRANSLATOR - FINAL JS CODE
-// ===============================
+// ======================================
+// ASL COFFEE SHOP TRANSLATOR - FINAL JS
+// ======================================
+
+// ======================
+// VARIABLES
+// ======================
 
 let lastGesture = "";
-let lastDetectedTime = 0;
+let lastGestureTime = 0;
 
-const video = document.getElementById("video");
-const output = document.getElementById("output");
+// ======================
+// ELEMENTS
+// ======================
 
-console.log("ASL Translator Running...");
+const video =
+    document.querySelector("video");
 
-// ===============================
-// MEDIAPIPE HANDS SETUP
-// ===============================
+const gestureText =
+    document.getElementById(
+        "gestureText"
+    );
 
-const hands = new Hands({
-    locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    }
-});
+console.log(
+    "Coffee Shop ASL Running..."
+);
 
-// HAND SETTINGS
+// ======================
+// TEXT TO SPEECH
+// ======================
 
-hands.setOptions({
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.7
-});
+function speakText(text){
 
-// ===============================
-// HAND DETECTION RESULTS
-// ===============================
+    // STOP PREVIOUS SPEECH
 
-hands.onResults((results) => {
+    window.speechSynthesis.cancel();
 
-    // HAND DETECTED
+    // REMOVE EMOJIS
 
-    if (
-        results.multiHandLandmarks &&
-        results.multiHandLandmarks.length > 0
-    ) {
+    const cleanText =
+        text.replace(/[^\w\s]/gi,'');
 
-        const landmarks =
-            results.multiHandLandmarks[0];
+    // CREATE SPEECH
 
-        // DETECT GESTURE
+    const speech =
+        new SpeechSynthesisUtterance(
+            cleanText
+        );
 
-        const gesture =
-            detectGesture(landmarks);
+    // VOICE SETTINGS
 
-        const currentTime = Date.now();
+    speech.lang = "en-IN";
 
-   function updateGesture(text){
+    speech.rate = 0.9;
+
+    speech.pitch = 1;
+
+    speech.volume = 1;
+
+    // SPEAK
+
+    window.speechSynthesis.speak(
+        speech
+    );
+
+}
+
+// ======================
+// UPDATE GESTURE
+// ======================
+
+function updateGesture(text){
 
     const currentTime = Date.now();
+
+    // PREVENT VERY FAST CHANGES
 
     if(
         text !== lastGesture &&
         currentTime - lastGestureTime > 1500
     ){
 
-        // Show text
+        // SHOW TEXT
 
         gestureText.innerHTML = text;
 
-        // Speak text
+        // SPEAK TEXT
 
         speakText(text);
 
-        // Save gesture
+        // SAVE LAST GESTURE
 
         lastGesture = text;
 
         lastGestureTime = currentTime;
+
     }
 
 }
-        // SHOW GESTURE
 
-        if (gesture !== "Unknown") {
+// ======================
+// MEDIAPIPE HANDS
+// ======================
 
-            output.innerText = gesture;
+const hands = new Hands({
 
-            // SPEAK ONLY IF NEW
+    locateFile: (file) => {
 
-            if (
-                gesture !== lastGesture ||
-                currentTime - lastDetectedTime > 2000
-            ) {
-
-                speak(gesture);
-
-                lastGesture = gesture;
-
-                lastDetectedTime = currentTime;
-            }
-
-        }
-
-        else {
-
-            output.innerText =
-                "Gesture Not Recognized";
-
-        }
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
 
     }
 
-    // NO HAND DETECTED
+});
 
-    else {
+// ======================
+// HAND SETTINGS
+// ======================
 
-        output.innerText =
+hands.setOptions({
+
+    maxNumHands:1,
+
+    modelComplexity:1,
+
+    minDetectionConfidence:0.7,
+
+    minTrackingConfidence:0.7
+
+});
+
+// ======================
+// HAND RESULTS
+// ======================
+
+hands.onResults((results) => {
+
+    // HAND DETECTED
+
+    if(
+        results.multiHandLandmarks &&
+        results.multiHandLandmarks.length > 0
+    ){
+
+        const lm =
+            results.multiHandLandmarks[0];
+
+        detectGesture(lm);
+
+    }
+
+    // NO HAND
+
+    else{
+
+        gestureText.innerHTML =
             "Show Gesture...";
 
     }
 
 });
 
-// ===============================
-// CAMERA START
-// ===============================
+// ======================
+// CAMERA
+// ======================
 
-const camera = new Camera(video, {
+const camera =
+    new Camera(video,{
 
     onFrame: async () => {
 
@@ -134,8 +174,9 @@ const camera = new Camera(video, {
 
     },
 
-    width: 640,
-    height: 480
+    width:640,
+
+    height:480
 
 });
 
@@ -143,18 +184,20 @@ const camera = new Camera(video, {
 
 camera.start();
 
-// ===============================
-// GESTURE DETECTION FUNCTION
-// ===============================
+// ======================
+// GESTURE DETECTION
+// ======================
 
-function detectGesture(lm) {
+function detectGesture(lm){
 
-    // ===========================
+    // ======================
     // FINGER STATES
-    // ===========================
+    // ======================
 
     const thumbOpen =
-        Math.abs(lm[4].x - lm[2].x) > 0.1;
+        Math.abs(
+            lm[4].x - lm[2].x
+        ) > 0.1;
 
     const indexOpen =
         lm[8].y < lm[6].y;
@@ -176,163 +219,145 @@ function detectGesture(lm) {
         pinkyOpen
     );
 
-    // ===========================
-    // HELLO ✋
-    // ===========================
+    // ======================
+    // I WANT COFFEE ☕
+    // ALL FINGERS OPEN
+    // ======================
 
-   /* =====================
-   HELLO
-===================== */
+    if(
+        thumbOpen &&
+        indexOpen &&
+        middleOpen &&
+        ringOpen &&
+        pinkyOpen
+    ){
 
-if(
-    thumbOpen &&
-    indexOpen &&
-    middleOpen &&
-    ringOpen &&
-    pinkyOpen
-){
+        updateGesture(
+            "I Want Coffee ☕"
+        );
 
-    updateGesture(
-        "I WANT COFFEE 👋"
-    );
+    }
+
+    // ======================
+    // HOW MUCH 💰
+    // PEACE SIGN
+    // ======================
+
+    else if(
+        !thumbOpen &&
+        indexOpen &&
+        middleOpen &&
+        !ringOpen &&
+        !pinkyOpen
+    ){
+
+        updateGesture(
+            "How Much? 💰"
+        );
+
+    }
+
+    // ======================
+    // CAPPUCCINO ☕
+    // ONE FINGER
+    // ======================
+
+    else if(
+        !thumbOpen &&
+        indexOpen &&
+        !middleOpen &&
+        !ringOpen &&
+        !pinkyOpen
+    ){
+
+        updateGesture(
+            "One Cappuccino Please ☕"
+        );
+
+    }
+
+    // ======================
+    // OKAY 👍
+    // THUMBS UP
+    // ======================
+
+    else if(
+        thumbOpen &&
+        !indexOpen &&
+        !middleOpen &&
+        !ringOpen &&
+        !pinkyOpen
+    ){
+
+        updateGesture(
+            "Okay 👍"
+        );
+
+    }
+
+    // ======================
+    // THANK YOU ❤️
+    // CALL ME SIGN
+    // ======================
+
+    else if(
+        thumbOpen &&
+        !indexOpen &&
+        !middleOpen &&
+        !ringOpen &&
+        pinkyOpen
+    ){
+
+        updateGesture(
+            "Thank You ❤️"
+        );
+
+    }
+
+    // ======================
+    // BILL PLEASE 🧾
+    // CLOSED FIST
+    // ======================
+
+    else if(
+        !thumbOpen &&
+        !indexOpen &&
+        !middleOpen &&
+        !ringOpen &&
+        !pinkyOpen
+    ){
+
+        updateGesture(
+            "Bill Please 🧾"
+        );
+
+    }
+
+    // ======================
+    // UNKNOWN
+    // ======================
+
+    else{
+
+        updateGesture(
+            "Gesture Not Recognized"
+        );
+
+    }
 
 }
 
-/* =====================
-   COFFEE
-===================== */
+// ======================
+// CLEAR BUTTON
+// ======================
 
-else if(
-    thumbOpen &&
-    indexOpen &&
-    middleOpen &&
-    !ringOpen &&
-    !pinkyOpen
-){
+document.getElementById(
+    "clearBtn"
+).onclick = function(){
 
-    updateGesture(
-        "HOW MUCH?"
-    );
-
-}
-
-/* =====================
-   CAPPUCCINO
-===================== */
-
-else if(
-    !thumbOpen &&
-    indexOpen &&
-    !middleOpen &&
-    !ringOpen &&
-    !pinkyOpen
-){
-
-    updateGesture(
-        "One Cappuccino Please ☕"
-    );
-
-}
-
-/* =====================
-   HOW MUCH
-===================== */
-
-else if(
-    thumbOpen &&
-    !indexOpen &&
-    !middleOpen &&
-    !ringOpen &&
-    !pinkyOpen
-){
-
-    updateGesture(
-        "OKAY"
-    );
-
-}
-
-/* =====================
-   THANK YOU
-===================== */
-
-else if(
-    thumbOpen &&
-    !indexOpen &&
-    !middleOpen &&
-    !ringOpen &&
-    pinkyOpen
-){
-
-    updateGesture(
-        "Thank You ❤️"
-    );
-
-}
-
-/* =====================
-   BILL PLEASE
-===================== */
-
-else if(
-    !thumbOpen &&
-    !indexOpen &&
-    !middleOpen &&
-    !ringOpen &&
-    !pinkyOpen
-){
-
-    updateGesture(
-        "Bill Please 🧾"
-    );
-
-}
-
-else{
-
-    updateGesture(
-        "Gesture Not Recognized"
-    );
-
-}
-
- 
-
-// ===============================
-// CLEAR BUTTON FUNCTION
-// ===============================
-
-function clearSentence() {
-
-    output.innerText =
+    gestureText.innerHTML =
         "Show Gesture...";
 
     lastGesture = "";
 
-}
-
-// ===============================
-// TEXT TO SPEECH
-// ===============================
-
-function speak(text) {
-
-    // STOP PREVIOUS SPEECH
-
-    window.speechSynthesis.cancel();
-
-    const speech =
-        new SpeechSynthesisUtterance();
-
-    speech.text = text;
-
-    speech.lang = "en-US";
-
-    speech.rate = 1;
-
-    speech.pitch = 1;
-
-    window.speechSynthesis.speak(speech);
-
-}
-```
+};
