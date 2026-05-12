@@ -170,105 +170,123 @@ function detectGesture(lm) {
     // HELLO ✋
     // ===========================
 
-    if (
-        thumbOpen &&
-        indexOpen &&
-        middleOpen &&
-        ringOpen &&
-        pinkyOpen
-    ) {
+   /* =====================
+   HELLO
+===================== */
 
-        return "HELLO ✋";
+if(
+    thumbOpen &&
+    indexOpen &&
+    middleOpen &&
+    ringOpen &&
+    pinkyOpen
+){
 
-    }
-
-    // ===========================
-    // PEACE ✌️
-    // ===========================
-
-    if (
-        !thumbOpen &&
-        indexOpen &&
-        middleOpen &&
-        !ringOpen &&
-        !pinkyOpen
-    ) {
-
-        return "PEACE ✌️";
-
-    }
-
-    // ===========================
-    // ONE ☝️
-    // ===========================
-
-    if (
-        !thumbOpen &&
-        indexOpen &&
-        !middleOpen &&
-        !ringOpen &&
-        !pinkyOpen
-    ) {
-
-        return "ONE ☝️";
-
-    }
-
-    // ===========================
-    // GOOD 👍
-    // ===========================
-
-    if (
-        thumbOpen &&
-        !indexOpen &&
-        !middleOpen &&
-        !ringOpen &&
-        !pinkyOpen
-    ) {
-
-        return "GOOD 👍";
-
-    }
-
-    // ===========================
-    // STOP ✋
-    // ===========================
-
-    if (
-        !thumbOpen &&
-        indexOpen &&
-        middleOpen &&
-        ringOpen &&
-        pinkyOpen
-    ) {
-
-        return "STOP ✋";
-
-    }
-
-    // ===========================
-    // CALL ME 🤙
-    // ===========================
-
-    if (
-        thumbOpen &&
-        !indexOpen &&
-        !middleOpen &&
-        !ringOpen &&
-        pinkyOpen
-    ) {
-
-        return "CALL ME 🤙";
-
-    }
-
-    // ===========================
-    // UNKNOWN
-    // ===========================
-
-    return "Unknown";
+    updateGesture(
+        "Hello 👋"
+    );
 
 }
+
+/* =====================
+   COFFEE
+===================== */
+
+else if(
+    !thumbOpen &&
+    indexOpen &&
+    middleOpen &&
+    !ringOpen &&
+    !pinkyOpen
+){
+
+    updateGesture(
+        "I want Coffee ☕"
+    );
+
+}
+
+/* =====================
+   CAPPUCCINO
+===================== */
+
+else if(
+    !thumbOpen &&
+    indexOpen &&
+    !middleOpen &&
+    !ringOpen &&
+    !pinkyOpen
+){
+
+    updateGesture(
+        "One Cappuccino Please ☕"
+    );
+
+}
+
+/* =====================
+   HOW MUCH
+===================== */
+
+else if(
+    thumbOpen &&
+    !indexOpen &&
+    !middleOpen &&
+    !ringOpen &&
+    !pinkyOpen
+){
+
+    updateGesture(
+        "How Much? 💰"
+    );
+
+}
+
+/* =====================
+   THANK YOU
+===================== */
+
+else if(
+    thumbOpen &&
+    !indexOpen &&
+    !middleOpen &&
+    !ringOpen &&
+    pinkyOpen
+){
+
+    updateGesture(
+        "Thank You ❤️"
+    );
+
+}
+
+/* =====================
+   BILL PLEASE
+===================== */
+
+else if(
+    !thumbOpen &&
+    indexOpen &&
+    middleOpen &&
+    ringOpen &&
+    pinkyOpen
+){
+
+    updateGesture(
+        "Bill Please 🧾"
+    );
+
+}
+
+else{
+
+    updateGesture(
+        "Gesture Not Recognized"
+    );
+
+}
+
+ 
 
 // ===============================
 // CLEAR BUTTON FUNCTION
